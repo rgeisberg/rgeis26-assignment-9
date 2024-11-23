@@ -116,7 +116,6 @@ def update(frame, mlp, ax_input, ax_hidden, ax_gradient, X, y):
 
     # Perform training steps by calling forward and backward function
     for _ in range(10):
-        # Perform a training step
         mlp.forward(X)
         mlp.backward(X, y)
 
@@ -131,11 +130,22 @@ def update(frame, mlp, ax_input, ax_hidden, ax_gradient, X, y):
         alpha=0.7
     )
     ax_hidden.set_title("Hidden Layer Features")
+
+    # Set fixed axes limits for the hidden layer plot
+    ax_hidden.set_xlim3d(-2, 2)
+    ax_hidden.set_ylim3d(-2, 2)
+    ax_hidden.set_zlim3d(-2, 2)
+
+    # Set fixed viewing angle (optional)
+    ax_hidden.view_init(elev=30, azim=45)  # Adjust as needed
+
+    # Plot the decision hyperplane in hidden space
     W2 = mlp.W2
     b2 = mlp.b2
-    x_range = np.linspace(-1, 1, 100)
-    y_range = np.linspace(-1, 1, 100)
+    x_range = np.linspace(-1, 1, 10)
+    y_range = np.linspace(-1, 1, 10)
     xx, yy = np.meshgrid(x_range, y_range)
+
     if W2.shape[0] >= 3 and W2[2, 0] != 0:
         zz = -(W2[0, 0] * xx + W2[1, 0] * yy + b2[0, 0]) / W2[2, 0]
         ax_hidden.plot_surface(xx, yy, zz, alpha=0.3, color='gray')
@@ -144,8 +154,11 @@ def update(frame, mlp, ax_input, ax_hidden, ax_gradient, X, y):
         ax_hidden.plot_surface(xx, yy, zz, alpha=0.3, color='gray')
 
     # Plot decision boundary in input space
-    x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
-    y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+    x_min, x_max = -3, 3  # Set fixed limits
+    y_min, y_max = -3, 3
+
+    ax_input.set_xlim(x_min, x_max)
+    ax_input.set_ylim(y_min, y_max)
 
     xx_input, yy_input = np.meshgrid(
         np.linspace(x_min, x_max, 100),
